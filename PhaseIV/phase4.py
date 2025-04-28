@@ -67,12 +67,6 @@ def make_view(root, view_name):
     button = ttk.Button(window, text = "View", command=lambda: get_view(view_name, text))
     button.grid(row = 3, column = 0)
 
-    scroll_vert = ttk.Scrollbar(window, orient='vertical')
-    scroll_vert.grid(row = 1, column = 1)
-    scroll_hori = ttk.Scrollbar(window, orient='horizontal')
-    scroll_hori.grid(row=2, column=0)
-    text.configure(xscrollcommand=scroll_hori.set)
-
 
     return window
 
@@ -83,8 +77,6 @@ def get_view(view_name, text):
         cursor.execute("Select * from " + view_name)
         view = cursor.fetchall()
         # print(view[0])
-        if text:
-            print("Text is here")
         count = 1
         for row in view:
             bullet = str(count) + ". "
@@ -92,6 +84,8 @@ def get_view(view_name, text):
 
             text.insert("end", bullet + line + "\n")
             count += 1
+        print("Suck it")
+        connection.close()
 
     except Exception:
         print("Can't get View")
