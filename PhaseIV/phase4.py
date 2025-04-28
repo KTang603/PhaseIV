@@ -67,6 +67,12 @@ def make_view(root, view_name):
     button = ttk.Button(window, text = "View", command=lambda: get_view(view_name, text))
     button.grid(row = 3, column = 0)
 
+    scroll_vert = ttk.Scrollbar(window, orient='vertical')
+    scroll_vert.grid(row = 1, column = 1)
+    scroll_hori = ttk.Scrollbar(window, orient='horizontal')
+    scroll_hori.grid(row=2, column=0)
+    text.configure(xscrollcommand=scroll_hori.set)
+
 
     return window
 
