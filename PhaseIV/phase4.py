@@ -6,16 +6,19 @@ from MySQLdb import connect
 
 
 def connect_db():
-    return mysql.connector.connect(
+    print("Connecting")
+    connection = mysql.connector.connect(
         host="localhost",
         database= 'flight_tracking',
         user='root',
-        password='737nnn'
+        password='737nnn',
     )
+    connection.autocommit = True
+    return connection
 
 
 def make_procedure(root, proc_name, parameters):
-    window = ttk.Frame(root)
+    window = ttk.Frame(root, padding='0.15i')
     name = ttk.Label(window, text=proc_name, font = ("Comic Sans MS", 20))
     name.grid(row = 0, column = 0)
 
@@ -24,7 +27,7 @@ def make_procedure(root, proc_name, parameters):
     for x in parameters:
         label = ttk.Label(window, text=x[0], font=("Comic Sans MS", 12))
         entry = ttk.Entry(window)
-        label.grid(row = row, column = 0)
+        label.grid(row = row, column = 0, pady=(0,10))
         entry.grid(row= row, column = 1)
         entries.append(entry)
         row += 1
@@ -46,17 +49,19 @@ def call_procedure(proc_name, entries, parameters):
 
             param = entry.get().strip()
             if "char" in parameters[count][1] or "time" in parameters[count][1]:
-                param = "\'" + param + "\'"
+                if not param.lower() == "null":
+                    param = "\'" + param + "\'"
             call_string = call_string + param
             count += 1
         call_string += ")"
         print(call_string)
-        '''
+
         cursor.execute(call_string)
+
         cursor.execute("Select * from airport")
         string = cursor.fetchall()
         print(string)
-        '''
+
         connection.close()
         print("Success (probably)")
 
@@ -64,7 +69,7 @@ def call_procedure(proc_name, entries, parameters):
         print("Failure")
 
 def make_view(root, view_name):
-    window = ttk.Frame(root)
+    window = ttk.Frame(root, padding='0.05i')
     name = ttk.Label(window, text=view_name, font=("Comic Sans MS", 20))
     name.grid(row=0, column=0)
 
@@ -85,10 +90,11 @@ def make_view(root, view_name):
 def get_view(view_name, text):
     try:
         connection = connect_db()
+
         cursor = connection.cursor()
         cursor.execute("Select * from " + view_name)
         view = cursor.fetchall()
-        # print(view[0])
+        print(view[0])
         count = 1
         for row in view:
             bullet = str(count) + ". "
@@ -96,7 +102,7 @@ def get_view(view_name, text):
 
             text.insert("end", bullet + line + "\n")
             count += 1
-        print("Suck it")
+        print("Got View")
         connection.close()
 
     except Exception:
@@ -105,10 +111,11 @@ def get_view(view_name, text):
 
 def main():
 
-
     root = tk.Tk()
     root.title("Airport Management System")
-    root.geometry("800x500")
+    root.geometry("800x600")
+    style = ttk.Style()
+    style.theme_use('xpnative') # This is useless
 
 
     master = ttk.Notebook(root)
