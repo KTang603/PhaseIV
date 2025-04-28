@@ -45,15 +45,21 @@ def call_procedure(proc_name, entries, parameters):
                 raise Exception
 
             param = entry.get().strip()
-            if "char" in parameters[count][1]:
+            if "char" in parameters[count][1] or "time" in parameters[count][1]:
                 param = "\'" + param + "\'"
             call_string = call_string + param
             count += 1
         call_string += ")"
         print(call_string)
+        '''
         cursor.execute(call_string)
+        cursor.execute("Select * from airport")
+        string = cursor.fetchall()
+        print(string)
+        '''
         connection.close()
         print("Success (probably)")
+
     except Exception:
         print("Failure")
 
